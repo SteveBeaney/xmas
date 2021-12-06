@@ -1,16 +1,25 @@
-# This is a sample Python script.
+import requests
+import time
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+
+
+    url = 'http://192.168.1.197/led/'
+    l = [(None, None, None)] * 200
+    pitch = 12
+
+    for j in range(100):
+        for i1 in range(pitch):
+            for i in range(len(l)):
+                if (i + i1) % pitch == 0:
+                    l[i] = (20, 0, 0)
+                else:
+                    l[i] = (20, 20, 20)
+            a = ''
+            for rgb in l:
+                a += str.format('{:02X}{:02X}{:02X}', rgb[0], rgb[1], rgb[2])
+            x = requests.post(url, data=a)
+
+            time.sleep(0.1)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

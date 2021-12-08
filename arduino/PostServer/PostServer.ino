@@ -9,19 +9,22 @@
 #define STAPSK  "ed174b4c5e"
 #endif
 #define LED_PIN0    14       // d5
-#define LED_PIN1    12       // d6
-#define LED_PIN2    13       // d7
-#define LED_PIN3    15       // d8
-#define LED_PIN4    4        // d2
+#define LED_PIN1    15       // d6
+#define LED_PIN2    12       // d7
+#define LED_PIN3    4        // d8
+#define LED_PIN4    13        // d2
 #define LED_COUNT   100
-#define total       200
+#define TOTAL       500
 
 const char* ssid     = STASSID;
 const char* password = STAPSK;
 
 ESP8266WebServer server(80);
-Adafruit_NeoPixel strip0 = Adafruit_NeoPixel(LED_COUNT, LED_PIN4, NEO_RGB + NEO_KHZ400);
-Adafruit_NeoPixel strip1 = Adafruit_NeoPixel(LED_COUNT, LED_PIN0, NEO_RGB + NEO_KHZ400);
+Adafruit_NeoPixel strip0 = Adafruit_NeoPixel(LED_COUNT, LED_PIN0, NEO_RGB + NEO_KHZ400);
+Adafruit_NeoPixel strip1 = Adafruit_NeoPixel(LED_COUNT, LED_PIN1, NEO_RGB + NEO_KHZ400);
+Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(LED_COUNT, LED_PIN2, NEO_RGB + NEO_KHZ400);
+Adafruit_NeoPixel strip3 = Adafruit_NeoPixel(LED_COUNT, LED_PIN3, NEO_RGB + NEO_KHZ400);
+Adafruit_NeoPixel strip4 = Adafruit_NeoPixel(LED_COUNT, LED_PIN4, NEO_RGB + NEO_KHZ400);
 //Adafruit_NeoPixel strip(LED_COUNT, LED_PIN4, NEO_GRB + NEO_KHZ400);
 
 
@@ -72,12 +75,24 @@ void setPix( int p, int r, int g, int b ) {
       case 1:
           strip1.setPixelColor(led, strip1.Color(r,g,b));  
           break;
+      case 2:
+          strip2.setPixelColor(led, strip2.Color(r,g,b));  
+          break;
+      case 3:
+          strip3.setPixelColor(led, strip3.Color(r,g,b));  
+          break;
+      case 4:
+          strip4.setPixelColor(led, strip4.Color(r,g,b));  
+          break;
   }
 }
 
 void showPix() {
     strip0.show();  
     strip1.show();  
+    strip2.show();  
+    strip3.show();  
+    strip4.show();  
 }
 
 void setup(void) {
@@ -96,36 +111,39 @@ void setup(void) {
     Serial.print("IP address:");
     Serial.println(WiFi.localIP());
     if (MDNS.begin("esp8266")) {
-        Serial.println("MDNS responder started");
+        Serial.println("MDNS responder started");       
     }
     server.on("/led/", handlePlain);
     server.begin();
     Serial.println("HTTP server started");
     strip0.begin();
     strip1.begin();
-    for(int i=0; i<200; i++) { 
-        setPix(i,4,0,4);
+    strip2.begin();
+    strip3.begin();
+    strip4.begin();
+    for(int i=0; i<TOTAL; i++) { 
+        setPix(i,40,0,40);
     }
     showPix();
-    for(int i=1; i<200; i++) { 
+    for(int i=1; i<TOTAL; i++) { 
         setPix(i,200,0,200);
         setPix(i-1,4,0,4);
         showPix();
         delay(10);
     }
     for( int n=0; n < 20; n++ ) {
-        for(int i=0; i<200; i++) { 
+        for(int i=0; i<TOTAL; i++) { 
             setPix(i,20,20,20);
         }
         showPix();
         delay(200);
-        for(int i=0; i<200; i++) { 
+        for(int i=0; i<TOTAL; i++) { 
             setPix(i,40,0,0);
        }
         showPix();
         delay(200);
     }  
-    for(int i=0; i<200; i++) { 
+    for(int i=0; i<TOTAL; i++) { 
             setPix(i,20,20,20);
     }
     showPix();

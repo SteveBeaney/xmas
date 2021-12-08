@@ -1,31 +1,20 @@
 import requests
 import time
+import colorsys
+
+def hsv2rgb(h,s,v):
+    return tuple(round(i * 255) for i in colorsys.hsv_to_rgb(h,s,v))
 
 url = 'http://192.168.1.197/led/'
+l = [(None, None, None)] * 500
 
-for k in range(10000):
-    for i in range(200):
-        pattern=""
-        for j in range(200):
-            if i >= j and i <=j+30:
-                pattern +='002222'
-            else:
-                pattern +='050505'
-        try:
-            x = requests.post(url, data = pattern.upper(),timeout=0.5)
-            time.sleep(0.05)
-        except:
-            print('timeout ')
-
-
-def hsv_to_rgb(h, s, v):
-    if s == 0.0: v*=255; return (v, v, v)
-    i = int(h*6.) # XXX assume int() truncates!
-    f = (h*6.)-i; p,q,t = int(255*(v*(1.-s))), int(255*(v*(1.-s*f))), int(255*(v*(1.-s*(1.-f)))); v*=255; i%=6
-    if i == 0: return (v, t, p)
-    if i == 1: return (q, v, p)
-    if i == 2: return (p, v, t)
-    if i == 3: return (p, q, v)
-    if i == 4: return (t, p, v)
-    if i == 5: return (v, p, q)
+for j in range(3000):
+    for i in range( 100):
+        c = hsv2rgb(i/100,  1.0,  0.03 )
+        for k in range(500):
+            l[k] = c
+        a = ''
+        for rgb in l:
+            a += str.format('{:02X}{:02X}{:02X}', rgb[0], rgb[1], rgb[2])
+        x = requests.post(url, data=a)
 
